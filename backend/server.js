@@ -30,7 +30,7 @@ const testFun =(req, res)=>{
 }
 
 //app.use('/', testFun);
-app.use( contactRoute);
+app.use(contactRoute);
 
 
 // Server

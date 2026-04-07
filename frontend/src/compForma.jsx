@@ -1,85 +1,59 @@
-import { useState } from 'react';
+import React, {useState} from 'react'
+import axios from 'axios'
+import{Container, Form , Button} from 'react-bootstrap'
 
-function CompForma() {
-  const [form, setForm] = useState({
+const CompForma = () => {
+  const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    comment: ''
+    comment: '',
   });
-  const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5000/addContact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      });
-      if (res.ok) {
-        setMessage('Kontakti u ruajt me sukses!');
-        setForm({ firstName: '', lastName: '', email: '', comment: '' });
-      } else {
-        setMessage('Dicka shkoi gabim.');
-      }
-    } catch (err) {
-      setMessage('Serveri nuk u gjend.');
+      const response = await axios.post('http://localhost:5000/contact', formData);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
     }
   };
 
+
   return (
-    <div>
-      <h2>Forma e Kontaktit</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input
-            type="text"
-            name="firstName"
-            placeholder="Emri"
-            value={form.firstName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Mbiemri"
-            value={form.lastName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <textarea
-            name="comment"
-            placeholder="Mesazhi"
-            value={form.comment}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Dergo</button>
-      </form>
-      {message && <p>{message}</p>}
-    </div>
-  );
+    <Container>
+     <Form onSubmit={handleSubmit}>
+       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Label>First Name</Form.Label>
+        <Form.Control type="text" name='firstName' value={formData.firstName} onChange={handleChange} />
+      </Form.Group>
+       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Label>Last Name</Form.Label>
+        <Form.Control type="text" name='lastName' value={formData.lastName} onChange={handleChange} />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Label>Email address</Form.Label>
+        <Form.Control type="email" name='email' value={formData.email} onChange={handleChange} />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+        <Form.Label>Example textarea</Form.Label>
+        <Form.Control as="textarea" rows={3} name='comment' value={formData.comment} onChange={handleChange} />
+      </Form.Group>
+      <Button variant="primary" type="submit" onClick={handleSubmit}>
+        Submit
+      </Button>
+    </Form>
+    </Container>
+  )
 }
 
-export default CompForma;
+export default CompForma

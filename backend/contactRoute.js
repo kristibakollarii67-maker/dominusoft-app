@@ -1,18 +1,16 @@
 const express = require('express')
-const router = express.Router()
+const app = express()
 const contactModel = require('./contactModel')
 
-router.post('/addContact', async (req, res) => {
-    try{
+app.post('/contact', async (req, res)=>{
+    try {
         const newContact = new contactModel(req.body)
-        await newContact.save()
-        res.status(200).send("newContact")
-        console.log("added")
-    }catch(err){
-        res.status(500).send("Not add:"+err)
-        console.log("Not add: " + err)
+        const savedContact = await newContact.save()
+        res.status(200).json(savedContact)
+        console.log(added)
+    } catch (error) {
+        res.status(500).json({ message: 'Error saving contact', error })
     }
-
 })
 
-module.exports = router
+module.exports = app;
